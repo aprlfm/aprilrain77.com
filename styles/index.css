@@ -1,0 +1,38 @@
+.text-content {
+    color: var(--text);
+}
+
+.font-switcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.font-toggle {
+    background-color: var(--surface0);
+    color: var(--subtext1);
+    border: 1px solid var(--surface1);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.font-toggle:hover {
+    background-color: var(--surface1);
+    color: var(--text);
+}
+
+body.lexend-font {
+    font-family: 'Lexend', sans-serif;
+}
+
+.tagline {
+    margin-top: 12px;
+    color: var(--subtext0);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    font-style: italic;
+}
