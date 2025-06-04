@@ -1,0 +1,162 @@
+<div class="fixed inset-0 w-full h-full bg-[#1B1E2B] z-[-10] overflow-hidden">
+  <div id="starsContainer" class="absolute inset-0 opacity-15">
+    <svg id="starsSvg" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <path id="starShape" d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+      </defs>
+    </svg>
+  </div>
+
+  <div class="absolute inset-0 opacity-18">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="twinkle-pattern" x="0" y="0" width="240" height="240" patternUnits="userSpaceOnUse">
+          <circle cx="60" cy="80" r="1.8" fill="#DFE2F0" opacity="0.7">
+            <animate attributeName="opacity" values="0.1;0.9;0.1" dur="3.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="180" cy="45" r="1.2" fill="#CEA3D6" opacity="0.6">
+            <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2.1s" repeatCount="indefinite" begin="1.3s"/>
+          </circle>
+          <circle cx="220" cy="150" r="2.1" fill="#97BAC7" opacity="0.5">
+            <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4.7s" repeatCount="indefinite" begin="0.8s"/>
+          </circle>
+          <circle cx="25" cy="200" r="1.5" fill="#A5C7AE" opacity="0.6">
+            <animate attributeName="opacity" values="0.15;0.85;0.15" dur="3.8s" repeatCount="indefinite" begin="2.1s"/>
+          </circle>
+          <circle cx="140" cy="190" r="1.4" fill="#BECEB1" opacity="0.4">
+            <animate attributeName="opacity" values="0.25;0.9;0.25" dur="2.6s" repeatCount="indefinite" begin="0.3s"/>
+          </circle>
+          <circle cx="200" cy="90" r="1.6" fill="#DDCCA3" opacity="0.5">
+            <animate attributeName="opacity" values="0.2;0.75;0.2" dur="3.5s" repeatCount="indefinite" begin="1.8s"/>
+          </circle>
+          <circle cx="90" cy="30" r="1.1" fill="#E6AF8F" opacity="0.7">
+            <animate attributeName="opacity" values="0.1;0.8;0.1" dur="2.9s" repeatCount="indefinite" begin="0.6s"/>
+          </circle>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#twinkle-pattern)"/>
+    </svg>
+  </div>
+
+  <div class="absolute inset-0 bg-gradient-to-br from-[#262A38]/5 via-transparent to-[#32374D]/5"></div>
+</div>
+
+<script>
+  interface StarProperties {
+    x: number;
+    y: number;
+    scale: number;
+    radius: number;
+  }
+
+  const svgNS = "http://www.w3.org/2000/svg";
+  const starsSvgElement = document.getElementById('starsSvg');
+  const starColorsArray: string[] = ["#DFE2F0", "#CEA3D6", "#97BAC7", "#A5C7AE", "#BECEB1", "#DDCCA3"];
+  const starDesignBoxCenter = 12;
+  const desiredMinimumStarSpacing = 10; 
+  const maxPlacementAttemptsPerStar = 30;
+
+  function getRandomNumber(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+  }
+  
+  function generateStars(): void {
+    if (!starsSvgElement) {
+        return;
+    }
+    
+    const defsElement = starsSvgElement.querySelector('defs');
+    const childrenToRemove: ChildNode[] = [];
+    starsSvgElement.childNodes.forEach((childNode: ChildNode) => {
+        if (childNode !== defsElement) {
+            childrenToRemove.push(childNode);
+        }
+    });
+    childrenToRemove.forEach((childNode: ChildNode) => starsSvgElement.removeChild(childNode));
+
+    let svgEffectiveWidth = starsSvgElement.clientWidth;
+    let svgEffectiveHeight = starsSvgElement.clientHeight;
+
+    if (svgEffectiveWidth === 0 || svgEffectiveHeight === 0) {
+        svgEffectiveWidth = window.innerWidth;
+        svgEffectiveHeight = window.innerHeight;
+    }
+
+    const starDensityFactor = 5000; 
+    const maxStarsToAttempt = 500;
+    const numberOfStarsToAttempt = Math.min(Math.floor((svgEffectiveWidth * svgEffectiveHeight) / starDensityFactor), maxStarsToAttempt);
+
+    const placedStarsData: StarProperties[] = [];
+
+    for (let i = 0; i < numberOfStarsToAttempt; i++) {
+        let currentAttempt = 0;
+        let newStarProperties: StarProperties | null = null;
+
+        while (currentAttempt < maxPlacementAttemptsPerStar) {
+            const candidateScale = getRandomNumber(0.6, 1.2);
+            const candidateEffectiveRadius = starDesignBoxCenter * candidateScale; 
+
+            const minX = candidateEffectiveRadius;
+            const maxX = svgEffectiveWidth - candidateEffectiveRadius;
+            const minY = candidateEffectiveRadius;
+            const maxY = svgEffectiveHeight - candidateEffectiveRadius;
+
+            if (maxX <= minX || maxY <= minY) {
+                currentAttempt++;
+                continue; 
+            }
+            
+            const candidateX = getRandomNumber(minX, maxX);
+            const candidateY = getRandomNumber(minY, maxY);
+            
+            let collisionDetected = false;
+            for (const P of placedStarsData) {
+                const distanceSquared = (candidateX - P.x)**2 + (candidateY - P.y)**2;
+                const minAllowedDistance = P.radius + candidateEffectiveRadius + desiredMinimumStarSpacing;
+                if (distanceSquared < (minAllowedDistance**2)) {
+                    collisionDetected = true;
+                    break;
+                }
+            }
+
+            if (!collisionDetected) {
+                newStarProperties = { x: candidateX, y: candidateY, scale: candidateScale, radius: candidateEffectiveRadius };
+                break; 
+            }
+            currentAttempt++;
+        }
+
+        if (newStarProperties) {
+            placedStarsData.push(newStarProperties);
+            
+            const starInstance = document.createElementNS(svgNS, 'use');
+            starInstance.setAttribute('href', '#starShape');
+
+            const randomOpacity = getRandomNumber(0.22, 0.77);
+            const randomColor = starColorsArray[Math.floor(Math.random() * starColorsArray.length)];
+
+            starInstance.setAttribute('fill', randomColor);
+            starInstance.setAttribute('opacity', randomOpacity.toString());
+            starInstance.setAttribute('transform', `translate(${newStarProperties.x}, ${newStarProperties.y}) scale(${newStarProperties.scale}) translate(-${starDesignBoxCenter}, -${starDesignBoxCenter})`);
+            
+            starsSvgElement.appendChild(starInstance);
+        }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        requestAnimationFrame(generateStars);
+    });
+  } else {
+    requestAnimationFrame(generateStars);
+  }
+
+  let resizeDebounceTimer: ReturnType<typeof setTimeout>;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = setTimeout(() => {
+        requestAnimationFrame(generateStars);
+    }, 250);
+  });
+</script>

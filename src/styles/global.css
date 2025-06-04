@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --tw-bg0-hard: #1B1E2B;
+  --tw-bg0: #262A38;
+  --tw-bg0-soft: #32374D;
+  --tw-bg1: #424760;
+  --tw-bg2: #4B506D;
+  --tw-bg3: #545A78;
+  --tw-bg4: #5A6181;
+  --tw-bg5: #60678A;
+  --tw-fg: #DFE2F0;
+  --tw-red: #E6787A;
+  --tw-orange: #E6AF8F;
+  --tw-yellow: #DDCCA3;
+  --tw-green: #BECEB1;
+  --tw-aqua: #A5C7AE;
+  --tw-blue: #97BAC7;
+  --tw-purple: #CEA3D6;
+  --tw-grey0: #CAD0E9;
+  --tw-grey1: #B3B5E1;
+  --tw-grey2: #ADA8E0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--tw-bg0-hard);
+  color: var(--tw-fg);
+  font-family: 'IBM Plex Mono', 'Space Mono', monospace;
+}
+
+.font-space-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.font-ibm-plex-mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tw-bg0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tw-bg1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tw-bg2);
+}
+
+::selection {
+  background: var(--tw-purple);
+  color: var(--tw-bg0-hard);
+}
+
+::-moz-selection {
+  background: var(--tw-purple);
+  color: var(--tw-bg0-hard);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--tw-purple), var(--tw-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
